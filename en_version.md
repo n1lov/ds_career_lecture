@@ -40,8 +40,12 @@ The data is usually structured and clean, it's like in your favorite Kaggle comp
 ---
 ## - Alright, omitting quants, how do I improve my model in the production environment? Any examples of ML stacks in production?
 
-Well, actually, the process is the same. I mean, it's
+Well, actually, the process is the same. Starting with data massaging, doing all sorts of basic transformations like normalizing the data and removing outliers... choosing metrics, algorithms, and features, and creating some kind of PoC model of 20 lines of code... and nothing stops you to start searching for the best weights and ensembles for the next couple of weeks which can add a tiny fraction of a percent to the chosen metric. And that may sound impactful when at the end of each sprint you have a "Model weights have been updated, microserviceABC:metrics@k +0.005%" in the presentation after smashing the "Start grid-search" button.
+
+But is this impactful on the company level? Not really. Do not focus too much on just improving the model.
+
+Let us assume that you need to update the old recommendation service for an e-shop. If you follow the popular tutorials and practices you need to get the data enough to create a "userXproduct->rating" matrix. The next steps usually contain some choosing "the best" distance metric which could be cosine, Euclidean, Pearson... After playing a couple of days with metrics you may suddenly realize that your matrix filled with the production data will cause "out of memory" on any existing instance in the world and you may want to add SVD/PCA and start to hyperoptimise all possible parameters of them for another couple of days or weeks...
+
+And that will continue until someone from the upper management will notice a drop or stagnation in revenue or until someone from the manual testing team found out that recommended products are not really relevant. Or both of these discoveries will happen, resulting in an investigation of lacking correlation between recommendation metrics and sales.
 
 
-
-TODO: But do not focus too much on just improving the model
