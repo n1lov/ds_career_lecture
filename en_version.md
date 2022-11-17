@@ -46,6 +46,41 @@ But is this impactful on the company level? Not really. Do not focus too much on
 
 Let us assume that you need to update the old recommendation service for an e-shop. If you follow the popular tutorials and practices you need to get the data enough to create a "userXproduct->rating" matrix. The next steps usually contain some choosing "the best" distance metric which could be cosine, Euclidean, Pearson... After playing a couple of days with metrics you may suddenly realize that your matrix filled with the production data will cause "out of memory" on any existing instance in the world and you may want to add SVD/PCA and start to hyperoptimise all possible parameters of them for another couple of days or weeks...
 
-And that will continue until someone from the upper management will notice a drop or stagnation in revenue or until someone from the manual testing team found out that recommended products are not really relevant. Or both of these discoveries will happen, resulting in an investigation of lacking correlation between recommendation metrics and sales.
+And this will continue until someone from the upper management will notice a drop or stagnation in revenue or until someone from the manual testing team found out that recommended products are not really relevant. Or both of these discoveries will happen, resulting in an investigation of lacking correlation between recommendation metrics and sales.
 
 
+* Checking that the microservice was used as it was designed by the DS team. And for that you need to know the main programming language of the core project, and also know how to use tools such as Postman to query the production API. Ideally, someone from the DS team should be in response to merging the service into the core platform (ML Ops).
+
+* Testing on historical data may give incorrect results if you do not know the full history of the project. For example, in the process of testing you may assume that the old recommendation system always returned exactly 10 of the most relevant records because these records were logged on the backend-side, so the whole "improvement metrics" is based on a comparison of "old 10 vs new 10" records. In reality, these "old 10" records have been halved on the frontend, which took the responsibility for throwing out irrelevant records at the end of the recommendations list. So you need to interact with multiple team.
+
+* The metric itself is incorrect, or you simply do not have enough data. It's good to know the UI/UX part and the full customer workflow, and how buyers/customers are interacting with the platform. Like, for example, you can create a Jira ticket with the request of adding a new button, that allows customers to hide irrelevant results, or ask the frontend team to add click tracking. Also, do not hesitate to ask the sales dept./upper executive about their view of the "metric of success". That can be a number of sales/month, a growing rate, a nubmer of new clients, or some completely unexpected ratio. It's quite useful to build a correlation between this "success metric" and metrics from the ML models/backtesting.
+
+* Additional recommendation services are needed. For example, you may recommend products by considering their semantic similarity, and here comes the NLP. Or you can add a taxonomy of products such as UNSPSC, and build a classification on top for products with the unknown UNSPSC code (without playing way too much with weights and model ensembles this time, please). You can augment the data to the point when the product can be recommended as a "the client often bought the product X from the manufacturer Y, so let's also recommend the top [N_1] popular products of the manufacturer Y, where 30% of them will be in the same UNSPSC category of level [1-4] with the product X, and the rest 70% will be semantically similar to X. Also let's take into account all other products that were clicked by the customer, seasonality, discounts, the distance between a client and manufacturer/supplier, delivery availability, number of reviews and so on and so forth. For that, you have to know the industry you are working in.
+
+Speakig of the tech. stack, it could be 
+
+`DataLake` → `MLFlow`/`AWS_Sagemaker`(docker_image(`fastAPI`(model)→`REST`)) <-> core app. + `Elasticsearch` + BI tool (`Looker`/`Tableau`) + `Datadog` + `Grafana`
+
+you can also add `Apache software` in case of high load, but I have not seen cases where such tools as `Spark` or `Hadoop` were really needed in small/medium projects, the bandwidth of the input data is often overestimated during the design phase. The next steps will be about adding CI/CD, versioning, and finalizing the full model release flow -- all of that will be on the MLOps. Also adding routes for A/B testing, and snapshots of the whole platform for the proper historical testing (not only the data from the database but also all other settings that could affect the recommendations) -- this one will be on the DevOps and the backend team
+
+This will allow us to create 3 layers of analytics:
+* Platform level (logs, microservices, and their metrics -- Datadog, Grafana, Sagemaker/MLFlow), 
+* Developers level (team performance -- Jira, Lattice)
+* Company level ("success metrics" -- BI tool for top managers and investors)
+
+
+What I am trying to say is that following any of these points of the checklist will be more impactful than trying to finetune the single model for another sprint or two. So, when I was hiring DS/ML developers I was focused on the skills of a candidate which are not really related to DS/ML at the first glance. In a way, it is easier to teach ML to someone with the backend developing experience, than the other way around. Because you will have to, sooner or later.
+
+Of course I do not ignore completely math skills, for example, it is good and kind of required to understand distributions, outliers, the geometric interpretation of classification and regression, as well as the ability to select appropriate metrics and algorithms. But I don't see much point in asking the questions like “How are trees built in gradient boosting?” or something like that.
+
+
+---
+## - What did you add to the test task? How do you rate the assignment solution?
+
+Something practical, creating a cleaning module for the data of a given format. You can say a lot by looking at the way the candidate is cleaning the data, like can these methods be reusable or not. For example, the code may contain logic such as "at line 10 of the CSV file remove the last 5 symbols", which is a pretty bad approach. Or it can contain decent regexes with 3rd party libraries, that can be added straight to the real project.
+The task itself is pretty abstract, and it was created with the logic that for the best results you need to augment the initial data, which may require adding a scraper, mapper, and classifier, but all of this is not required. 
+
+Students usually tend to use their own code, which results in 1000+ lines of unreadable code in the module (which I usually can not run due to wrong import paths/different local environment/lib versions, in other words, the most common problem is a lack of a docker image).
+It seems strange, but understandable due to lab requirements at the university where you have to strictly follow the given instructions with your very own solutions.
+
+Personally, I do not really mind using 3rd party libraries, ready-to-use solutions from Github, and StackOverflow copy-pastes in test task solutions as long as they are solving the business goal.
