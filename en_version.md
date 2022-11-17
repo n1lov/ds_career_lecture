@@ -1,6 +1,4 @@
-# Junior-middle Data Science / Machine Learning developers from the company perspective
-
-### [2021] My lecture for first and second year students of IT and related faculties
+## [2021] My lecture / open discussion about "Junior-middle DS/ML developers from the company perspective" for first and second year students of IT and related faculties
 ---
 [Answers to pre-prepared student questions]
 
