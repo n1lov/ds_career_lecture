@@ -81,4 +81,4 @@ The task itself is pretty abstract, and it was created with the logic that for t
 Students usually tend to use their own code, which results in 1000+ lines of unreadable code in the module (which I usually can not run due to wrong import paths/different local environment/lib versions, in other words, the most common problem is a lack of a docker image).
 It seems strange, but understandable due to lab requirements at the university where you have to strictly follow the given instructions with your very own solutions.
 
-Personally, I do not really mind using 3rd party libraries, ready-to-use solutions from Github, and StackOverflow copy-pastes in test task solutions as long as they are solving the business goal.
+Personally, I do not really mind the use of 3rd party libraries, ready-to-use solutions from Github, and StackOverflow copy-pastes in test task solutions as long as they are solving the business goal.
